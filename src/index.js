@@ -66,13 +66,19 @@ const getTurnData = authors => {
     }
 };
 
-const state = {
-    turnData: getTurnData(authors)
+const onAnswerSelected = answer => {
+    const isCorrect = state.turnData.author.books.some(book => book === answer);
+    state.highlight = isCorrect ? 'correct' : 'wrong';
+    render();
 };
 
-ReactDOM.render(<App {...state} />, document.getElementById('root'));
+const state = {
+    turnData: getTurnData(authors),
+    highlight: '',
+    onAnswerSelected
+};
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: http://bit.ly/CRA-PWA
+const render = () => ReactDOM.render(<App {...state} />, document.getElementById('root'));
+
+render();
 serviceWorker.unregister();
