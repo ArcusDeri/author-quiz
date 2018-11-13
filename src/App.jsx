@@ -1,83 +1,100 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import AuthorQuiz from './Components/AuthorQuiz';
+import { shuffle, sample } from 'underscore';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import AddAuthorForm from './Components/AddAuthorForm';
 import './App.css';
 
-function  Hero() {
-  return (
-    <div className="row">
-      <div className="jumbotron col-10 offset-1">
-        <h1>Author Quiz</h1>
-        <p>Select the book written by the author shown</p>
-      </div>
-    </div>)
+
+
+class App extends React.Component {
+    constructor() {
+        super();
+        this.state = {
+            turnData: this.getTurnData(this.authors),
+            highlight: '',
+            onAnswerSelected: this.onAnswerSelected
+        };
+    } 
+
+    authors = [
+        {
+            name: 'Mark Twain',
+            imageUrl: 'images/authors/marktwain.jpg',
+            imageSource: 'Wikimedia Commons',
+            books: [
+                'The Adventures of Huckleberry Finn',
+                'Life on the Mississippi',
+                'Roughing It'
+            ]
+        },
+        {
+            name: 'Joseph Conrad',
+            imageUrl: 'images/authors/josephconrad.jpg',
+            imageSource: 'Wikimedia Commons',
+            books: ['Heart of Darkness']
+        },
+        {
+            name: 'J.K. Rowling',
+            imageUrl: 'images/authors/jkrowling.jpg',
+            imageSource: 'Wikimedia Commons',
+            imageAttribution: 'Daniel Ogren',
+            books: ['Harry Potter and the Sorcerers Stone']
+        },
+        {
+            name: 'Stephen King',
+            imageUrl: 'images/authors/stephenking.jpg',
+            imageSource: 'Wikimedia Commons',
+            imageAttribution: 'Pinguino',
+            books: [
+                'The Shining',
+                'It'
+            ]
+        },
+        {
+            name: 'William Shakespeare',
+            imageUrl: 'images/authors/shakespeare.jpg',
+            imageSource: 'Wikimedia Commons',
+            books: [
+                'Romeo and Juliet',
+                'Hamlet',
+                'Otello',
+                'Macbeth'
+            ]
+        }
+    ];
+    
+    getTurnData = authors => {
+        const allBooks = authors.reduce((p, c, i) => p.concat(c.books), []);
+        const fourRandomBooks = shuffle(allBooks).slice(0, 4);
+        const answer = sample(fourRandomBooks);
+    
+        return {
+            books: fourRandomBooks,
+            author: authors.find((author) => 
+                author.books.some((title) => 
+                    title === answer))
+        }
+    };
+    
+    onAnswerSelected = answer => {
+        const isCorrect = this.state.turnData.author.books.some(book => book === answer);
+        this.setState({
+            highlight: isCorrect ? 'correct' : 'wrong'
+        });
+    };
+
+    render() {
+        return ( 
+            <BrowserRouter>
+                <Switch>
+                    <Route exact path="/"  render={() => <AuthorQuiz {...this.state}/>}/>
+                    <Route path="/add" component={AddAuthorForm} />
+                </Switch>
+            </BrowserRouter>
+        );
+    }
+
 }
-
-const highlightToBgColor = highlight => {
-  const mapping = {
-    'none': '',
-    'correct': 'green',
-    'wrong': 'red'
-  }
-  return mapping[highlight];
-};
-
-function  Turn({author, books, highlight, onAnswerSelected}) {
-  return (
-    <div className="row turn" style={{backgroundColor: highlightToBgColor(highlight)}}>
-      <div className="col-4 offset-1">
-        <img src={author.imageUrl} className="author-image" alt="Author"/>
-      </div>
-      <div className="col-6">
-        {books.map(title => <Book title={title} key={title} onClick={onAnswerSelected} />)}
-      </div>
-    </div>)
-}
-
-function  Continue() {
-  return (
-    <div className="row">
-      <div className="jumbotron col-10 offset-1">
-        continue
-      </div>
-    </div>)
-}
-
-function  Footer() {
-  return (
-    <div id="footer" className="row">
-      <div className="col-12">
-        <p className="text-muted credit">
-          All image are from commons.wikimedia.org
-        </p>
-      </div>
-    </div>)
-}
-
-const Book = ({title, onClick}) => (
-  <div className="book" onClick={() => onClick(title)}>
-    <h4 className="book-title">{title}</h4>
-  </div>
-);
-
-Turn.propTypes = {
-  author: PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    imageUrl: PropTypes.string.isRequired,
-    imageSource: PropTypes.string.isRequired,
-    books: PropTypes.arrayOf(PropTypes.string).isRequired
-  }),
-  books: PropTypes.arrayOf(PropTypes.string).isRequired,
-  onAnswerSelected: PropTypes.func.isRequired,
-  highlight: PropTypes.string.isRequired
-}
-
-const App = ({turnData, highlight, onAnswerSelected}) => (
-  <div className="container-fluid">
-    <Hero/>
-    <Turn {...turnData} highlight={highlight} onAnswerSelected={onAnswerSelected}/>
-    <Continue/>
-    <Footer/>
-  </div>
-);
 
 export default App;

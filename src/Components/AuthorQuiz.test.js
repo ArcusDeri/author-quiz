@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
+import AuthorQuiz from './AuthorQuiz';
 import Enzyme, { mount, shallow, render } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 
@@ -26,13 +26,13 @@ const state = {
 describe("App Author Quiz", () => {
   it('renders without crashing', () => {
     const div = document.createElement('div');
-    ReactDOM.render(<App {...state} onAnswerSelected={() => {}} />, div);
+    ReactDOM.render(<AuthorQuiz {...state} onAnswerSelected={() => {}} />, div);
     ReactDOM.unmountComponentAtNode(div);
   });
 
   describe("When no answer has been selected", () => {
     let wrapper;
-    beforeAll(() => wrapper = mount(<App {...state} onAnswerSelected={() => {}}/>));
+    beforeAll(() => wrapper = mount(<AuthorQuiz {...state} onAnswerSelected={() => {}}/>));
 
     it("should have no background color", () => {
       expect(wrapper.find("div.row.turn").props().style.backgroundColor).toBe("");
@@ -43,7 +43,7 @@ describe("App Author Quiz", () => {
     let wrapper;
     beforeAll(() => {
       wrapper = mount(
-        <App {...(Object.assign({}, state, {highlight: 'wrong'}))} onAnswerSelected={() => {}} />);
+        <AuthorQuiz {...(Object.assign({}, state, {highlight: 'wrong'}))} onAnswerSelected={() => {}} />);
     });
 
     it("should have a red background color", () => {
@@ -55,7 +55,7 @@ describe("App Author Quiz", () => {
     let wrapper;
     beforeAll(() => {
       wrapper = mount(
-        <App {...(Object.assign({}, state, {highlight: 'correct'}))} onAnswerSelected={() => {}} />);
+        <AuthorQuiz {...(Object.assign({}, state, {highlight: 'correct'}))} onAnswerSelected={() => {}} />);
     });
 
     it("should have a green background color", () => {
@@ -68,7 +68,7 @@ describe("App Author Quiz", () => {
     const handleAnswerSelected = jest.fn();
     beforeAll(() => {
       wrapper = mount(
-        <App {...state} onAnswerSelected={handleAnswerSelected} />);
+        <AuthorQuiz {...state} onAnswerSelected={handleAnswerSelected} />);
       wrapper.find('.book').first().simulate('click');
     });
 
