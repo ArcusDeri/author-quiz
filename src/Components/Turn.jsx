@@ -4,12 +4,12 @@ import Book from './Book';
 
 const Turn = ({author, books, highlight, onAnswerSelected}) =>(
     <div className="row turn" style={{backgroundColor: highlightToBgColor(highlight)}}>
-    <div className="col-4 offset-1">
-        <img src={author.imageUrl} className="author-image" alt="Author"/>
-    </div>
-    <div className="col-6">
-        {books.map(title => <Book title={title} key={title} onClick={onAnswerSelected} />)}
-    </div>
+        <div className="offset-1">
+            <img src={author.imageUrl} className="author-image" alt="Author"/>
+        </div>
+        <div className="col-6">
+            {books.map(title => <Book title={title} key={title} onClick={onAnswerSelected} />)}
+        </div>
     </div>
 );
 
