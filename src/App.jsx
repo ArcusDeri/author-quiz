@@ -1,7 +1,7 @@
 import React from 'react';
 import AuthorQuiz from './Components/AuthorQuiz';
 import { shuffle, sample } from 'underscore';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { BrowserRouter, Route, Switch, withRouter } from 'react-router-dom';
 import AddAuthorForm from './Components/AddAuthorForm';
 import './App.css';
 
@@ -13,9 +13,12 @@ class App extends React.Component {
         this.state = {
             turnData: this.getTurnData(this.authors),
             highlight: '',
-            onAnswerSelected: this.onAnswerSelected
+            onAnswerSelected: this.onAnswerSelected,
+            onContinue: () => this.resetState()
         };
     } 
+
+    resetState = () => this.setState({turnData: this.getTurnData(this.authors), highlight: ''});
 
     authors = [
         {
@@ -84,12 +87,20 @@ class App extends React.Component {
         });
     };
 
+    AuthorWrapper = withRouter(({ history }) => 
+        <AddAuthorForm onAddAuthor={author => {
+            author.imageSource = author.imageSource ? author.imageSource : "Unknown";
+            this.authors.push(author);
+            history.push('/');
+        }}/>
+    );
+
     render() {
         return ( 
             <BrowserRouter>
                 <Switch>
                     <Route exact path="/"  render={() => <AuthorQuiz {...this.state}/>}/>
-                    <Route path="/add" component={AddAuthorForm} />
+                    <Route path="/add" component={this.AuthorWrapper} />
                 </Switch>
             </BrowserRouter>
         );

@@ -1,11 +1,11 @@
 import React from 'react';
 
-const Continue = ()  => {
+const Continue = ({isVisible, onContinue})  => {
     return (
       <div className="row">
-        <div className="jumbotron col-10 offset-1">
-          continue
-        </div>
+        {!isVisible ? null : <div className="col-11">
+          <button className="btn btn-primary btn-lg float-right" onClick={onContinue}>Next</button>
+        </div> }
       </div>)
 };
 

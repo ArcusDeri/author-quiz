@@ -5,11 +5,11 @@ import Continue from './Continue';
 import Footer from './Footer';
 import AddAuthorButton from './AddAuthorButton';
 
-const AuthorQuiz = ({turnData, highlight, onAnswerSelected}) => (
+const AuthorQuiz = ({turnData, highlight, onAnswerSelected, onContinue}) => (
   <div className="container-fluid">
     <Hero/>
     <Turn {...turnData} highlight={highlight} onAnswerSelected={onAnswerSelected}/>
-    <Continue/>
+    <Continue isVisible={highlight === 'correct'} onContinue={onContinue}/>
     <AddAuthorButton/>
     <Footer/>
   </div>
