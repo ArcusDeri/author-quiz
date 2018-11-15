@@ -1,4 +1,6 @@
 import React from "react";
+import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
 
 const AddAuthorForm = ({match, onAddAuthor}) => (
     <div className="fluid-container">
@@ -64,4 +66,13 @@ class AuthorForm extends React.Component {
     }
 }
 
-export default AddAuthorForm;
+const mapDispatchToProps = (dispatchEvent, props) => {
+    return {
+        onAddAuthor: (author) => {
+            dispatchEvent({ type: 'ADD_AUTHOR', author });
+            props.history.push('/');
+        }
+    }
+};
+
+export default withRouter(connect((state) => state, mapDispatchToProps)(AddAuthorForm));

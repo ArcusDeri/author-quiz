@@ -1,7 +1,7 @@
 import React from 'react';
 import AuthorQuiz from './Components/AuthorQuiz';
 import { shuffle, sample } from 'underscore';
-import { BrowserRouter, Route, Switch, withRouter } from 'react-router-dom';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import AddAuthorForm from './Components/AddAuthorForm';
 import * as Redux from 'redux';
 import * as ReactRedux from 'react-redux';
@@ -14,7 +14,7 @@ const App = () => (
         <BrowserRouter>
             <Switch>
                 <Route exact path="/"  component={AuthorQuiz}/>
-                <Route path="/add" component={AuthorWrapper} />
+                <Route path="/add" component={AddAuthorForm} />
             </Switch>
         </BrowserRouter>
     </ReactRedux.Provider>
@@ -84,7 +84,7 @@ const reducer = (state = { authors: authors, turnData: getTurnData(authors), hig
     switch (action.type) {
         case 'ANSWER_SELECTED':
             const isCorrect = state.turnData.author.books.some(book => book === action.answer);
-            return Object.assign({}, state, { 
+            return Object.assign({}, state, {
                 highlight: isCorrect ? 'correct' : 'wrong' 
             });
         case 'CONTINUE':
@@ -92,19 +92,15 @@ const reducer = (state = { authors: authors, turnData: getTurnData(authors), hig
                 highlight: '', 
                 turnData: getTurnData(state.authors)
             });
+        case 'ADD_AUTHOR':
+            return Object.assign({}, state, {
+                authors: state.authors.concat([action.author])
+            });
         default:
             return state;
     }
 };
 
-const store = Redux.createStore(reducer);
-
-const AuthorWrapper = withRouter(({ history }) => 
-    <AddAuthorForm onAddAuthor={author => {
-        author.imageSource = author.imageSource ? author.imageSource : "Unknown";
-        authors.push(author);
-        history.push('/');
-    }}/>
-);
+const store = Redux.createStore(reducer, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
 
 export default App;
